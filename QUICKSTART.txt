@@ -1,0 +1,156 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║       TRADINGVIEW MCP ON RAILWAY — QUICK START (NO SPIN-DOWN!)              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+⏱️  TOTAL TIME: 5-10 minutes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ WHY RAILWAY > RENDER:
+
+  ✓ NO SPIN-DOWN (always on, even free tier)
+  ✓ INSTANT RESPONSE (<200ms, no 30-sec wake-up)
+  ✓ WORKS WITH CLAUDE.AI (no timeout issues)
+  ✓ $0 COST for 3-6 months ($5 credits monthly)
+  ✓ THEN $5/month (cheaper than daily coffee!)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 STEP 1: PUSH TO GITHUB (2 min)
+
+   ┌──────────────────────────────────────────────────────────┐
+   │ git init                                                 │
+   │ git add .                                                │
+   │ git commit -m "tradingview-mcp on railway"              │
+   │ git remote add origin https://github.com/YOUR-USER/... │
+   │ git push -u origin main                                 │
+   └──────────────────────────────────────────────────────────┘
+
+   Create empty repo first: https://github.com/new
+   Name it: tradingview-mcp-railway
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 STEP 2: DEPLOY ON RAILWAY (2-3 min)
+
+   1. Go to: https://railway.app
+   2. Sign up (GitHub auth is easiest)
+   3. New Project → Deploy from GitHub repo
+   4. Select: tradingview-mcp-railway
+   5. Click: Deploy
+   6. Wait 2-3 min for build...
+
+   ✓ When done, you'll see a URL in Railway dashboard:
+      https://tradingview-mcp-xxx.railway.app
+
+      👈 COPY THIS URL!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚙️  STEP 3: GET YOUR RAILWAY URL
+
+   In Railway dashboard:
+   1. Select your service (tradingview-mcp)
+   2. Go to Deployments tab
+   3. Find the URL (https://tradingview-mcp-xxx.railway.app)
+   4. Copy it
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚙️  STEP 4: CONFIGURE CLAUDE.AI (1 min)
+
+   1. Go to: https://claude.ai
+   2. Bottom-left: Click account icon → Settings
+   3. Find: "MCPs" or "Connected Apps" section
+   4. Click: Add new MCP
+   5. Enter:
+      ┌────────────────────────────────────────────────┐
+      │ Name: tradingview-mcp                          │
+      │ URL: https://tradingview-mcp-xxx.railway.app   │
+      │      (from Railway dashboard)                  │
+      └────────────────────────────────────────────────┘
+   6. Save
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ STEP 5: TEST (1 min)
+
+   In Claude chat, ask:
+
+   "What are the top gainers on NASDAQ?"
+
+   or
+
+   "Give me a market snapshot"
+
+   Claude will use your MCP! 🎉
+
+   ⚠️  NO TIMEOUT ISSUES like Render!
+   The response will be fast.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📱 STEP 6: MOBILE (Optional, happens automatically)
+
+   Just sign in to Claude app (iPhone/Android).
+   Same MCPs from Claude.ai are available!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🆘 TROUBLESHOOTING
+
+Q: My Railway URL doesn't work?
+A: Wait 2 min. Check Railway dashboard → Deployments → Logs for errors.
+
+Q: Claude still sees a timeout?
+A: Make sure URL in Claude settings matches exactly (no trailing slashes).
+   Test URL in browser: https://your-url.railway.app
+   Should show MCP info.
+
+Q: Why is Railway better than Render for this?
+A: Render spins down after 15 min → Claude.ai timeout (30 sec wake-up).
+   Railway never spins down → Claude.ai gets instant response.
+
+Q: Is it really free?
+A: Yes, $5 monthly credits = free for 3-6 months.
+   After: $5/month if you keep it running (or switch to GitHub Actions).
+
+Q: How do I see logs?
+A: Railway Dashboard → Your service → Deployments → Logs
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 REFERENCE
+
+Files in this repo:
+  ✓ Procfile ............... Start command
+  ✓ server.py .............. Main wrapper
+  ✓ requirements.txt ....... Python deps
+  ✓ build.sh ............... Build script
+  ✓ .gitignore ............. Git ignore
+  ✓ railway.json ........... Optional config
+  ✓ README.md .............. Full docs
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 SUMMARY
+
+Your setup after this:
+
+   PC (Windows 11)  ← Does nothing anymore
+   
+         ↓
+   
+   Railway Cloud  ← tradingview-mcp running 24/7 (NO SPIN-DOWN!)
+   
+         ↓
+   
+   Claude.ai (Web) + Claude App (Mobile) ← Both work instantly!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Follow the 6 steps above.
+
+You'll have a working MCP in 10 minutes with ZERO spin-down issues.
+
+Good luck! 🚀
