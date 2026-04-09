@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 TradingView MCP Server Wrapper for Railway deployment
-Starts tradingview-mcp in streamable-http mode with proxy
+Starts tradingview-mcp in streamable-http mode with FastAPI proxy
 """
 
 import os
@@ -9,16 +9,12 @@ import subprocess
 import sys
 import threading
 import time
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 import uvicorn
-import httpx
 
 app = FastAPI()
-
-# Internal port for tradingview-mcp
-INTERNAL_PORT = 8001
-client = None
+mcp_process = None
 
 @app.get("/")
 async def health():
@@ -27,32 +23,30 @@ async def health():
         "status": "ok",
         "service": "tradingview-mcp",
         "version": "1.0",
-        "message": "Add to Claude.ai: https://your-railway-url.railway.app"
+        "message": "MCP is running. Add to Claude.ai with this URL."
     })
 
-@app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
-async def proxy(path: str):
-    """Proxy all other requests to the internal MCP server"""
-    try:
-        url = f"http://127.0.0.1:{INTERNAL_PORT}/{path}"
-        async with httpx.AsyncClient() as client:
-            response = await client.request(
-                method="GET",
-                url=url,
-                follow_redirects=True
-            )
-            return JSONResponse(response.json(), status_code=response.status_code)
-    except Exception as e:
-        return JSONResponse({"error": str(e)}, status_code=500)
+@app.get("/_health")
+async def deep_health():
+    """Deep health check"""
+    return JSONResponse({
+        "status": "ok",
+        "mcp_process": mcp_process.poll() is None if mcp_process else False,
+        "port": os.getenv("PORT", "8000")
+    })
 
-def start_mcp_server():
-    """Start the tradingview-mcp server on internal port"""
-    time.sleep(1)  # Wait for FastAPI to start
+def start_mcp_background():
+    """Start the tradingview-mcp server in background"""
+    global mcp_process
+    
+    print("\n⏳ Waiting for FastAPI to initialize...")
+    time.sleep(2)
     
     host = "127.0.0.1"
-    port = str(INTERNAL_PORT)
+    port = "8001"
     
-    print(f"\n🔄 Starting MCP server on {host}:{port}")
+    print(f"\n🚀 Starting MCP server on {host}:{port}")
+    print("=" * 70)
     
     cmd = [
         "uvx",
@@ -63,10 +57,28 @@ def start_mcp_server():
         "--port", port
     ]
     
+    print(f"Command: {' '.join(cmd)}")
+    print("=" * 70)
+    
     try:
-        subprocess.run(cmd, check=False)
+        # Use Popen to run process in background
+        mcp_process = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1
+        )
+        
+        # Stream output
+        for line in iter(mcp_process.stdout.readline, ''):
+            if line:
+                print(f"[MCP] {line.rstrip()}")
+        
+        mcp_process.wait()
     except Exception as e:
         print(f"❌ Error starting MCP: {e}")
+        sys.exit(1)
 
 def main():
     port = int(os.getenv("PORT", "8000"))
@@ -76,10 +88,11 @@ def main():
     print("=" * 70)
     
     # Start MCP server in background thread
-    mcp_thread = threading.Thread(target=start_mcp_server, daemon=True)
+    mcp_thread = threading.Thread(target=start_mcp_background, daemon=False)
     mcp_thread.start()
     
-    # Start FastAPI proxy server
+    # Start FastAPI server
+    print(f"\n📡 Starting FastAPI on {host}:{port}")
     uvicorn.run(app, host=host, port=port, log_level="info")
 
 if __name__ == "__main__":
